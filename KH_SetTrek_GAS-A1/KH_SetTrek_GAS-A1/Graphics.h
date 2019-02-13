@@ -24,6 +24,9 @@ class Graphics
 	ID2D1Factory* factory; //The factory allows us to create many other types of D2D resources
 	ID2D1HwndRenderTarget* rendertarget; //this is typically an area in our GPU memory.. like a back buffer 
 	ID2D1SolidColorBrush* brush; //Note this COM interface! Remember to release it!
+	RECT windowSize;
+	float windowWidth;
+	float windowHeight;
 
 public:
 	Graphics();
@@ -59,5 +62,7 @@ public:
 
 	float GetWindowWidth(void);
 	float GetWindowHeight(void);
+	RECT GetWindowSize(void);
+	void SetWindowSize(RECT size);
 
 };

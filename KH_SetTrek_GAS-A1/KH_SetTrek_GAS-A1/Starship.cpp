@@ -24,7 +24,7 @@ Starship::~Starship()
 }
 
 
-void Starship::InitImage(wchar_t* filename)
+void Starship::InitImage(const wchar_t* filename)
 {
 	image = new SpriteSheet(filename, gfx);
 }
@@ -33,6 +33,8 @@ void Starship::ChromaEffect(float r, float g, float b)
 {
 	gfx->GetDeviceContext()->CreateEffect(CLSID_D2D1ChromaKey, &effect);
 
+	// Get the bitmap resource from UploadImage
+	bmp = image->GetBitmap();
 
 	effect->SetInput(0, bmp);
 	effect->SetValue(D2D1_CHROMAKEY_PROP_COLOR, D2D1::Vector3F(r, g, b));
@@ -44,4 +46,11 @@ void Starship::ChromaEffect(float r, float g, float b)
 void Starship::Draw(float left, float top)
 {
 
+	gfx->GetDeviceContext()->DrawImage(effect,
+		D2D1::Point2F(left, top));
+	//gfx->GetDeviceContext()->DrawImage(
+	//	effect,
+	//	D2D1::Point2F(left, top),
+	//	D2D1::RectF(0, 0, gfx->GetWindowWidth(), gfx->GetWindowHeight())
+	//);
 }

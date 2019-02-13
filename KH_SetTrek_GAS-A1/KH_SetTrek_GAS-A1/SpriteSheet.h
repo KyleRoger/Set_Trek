@@ -9,6 +9,7 @@ class SpriteSheet
 	Graphics* gfx; //Reference to the Graphics class
 	ID2D1Bitmap* bmp; //This will hold our loaded and converted Bitmap file
 
+
 public:
 	//Constructor
 	SpriteSheet(const wchar_t* filename, Graphics* gfx);
@@ -19,5 +20,8 @@ public:
 	//Draw bitmap to the render target
 	void DrawBackground(float left, float top, float right, float bottom);
 	void Draw();
+	void DrawPlanet(float left, float top);
+	void ApplyChromaEffect();
+	ID2D1Bitmap* GetBitmap(void);
 
 };

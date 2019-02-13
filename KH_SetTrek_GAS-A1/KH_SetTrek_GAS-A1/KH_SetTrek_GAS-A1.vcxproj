@@ -143,8 +143,10 @@
     <ClCompile Include="GameController.cpp" />
     <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Level1.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Movement.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Starship.cpp" />
   </ItemGroup>
@@ -152,7 +154,9 @@
     <ClInclude Include="GameController.h" />
     <ClInclude Include="GameLevel.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="Level1.h" />
+    <ClInclude Include="Movement.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Starship.h" />
   </ItemGroup>
