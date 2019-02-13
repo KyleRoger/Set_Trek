@@ -29,20 +29,20 @@ Graphics::~Graphics()
 // methods, their parameters, returns and so on.
 bool Graphics::Init(HWND windowHandle)
 {
-	////swap chain
-	//DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
-	//swapChainDesc.BufferCount = 1; //Sets it to double buffering
-	//swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	//swapChainDesc.SampleDesc.Count = 1;
-	//swapChainDesc.Windowed = true; //If false, is fulllscreen mode.
+	//swap chain
+	DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
+	swapChainDesc.BufferCount = 1; //Sets it to double buffering
+	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.SampleDesc.Count = 1;
+	swapChainDesc.Windowed = true; //If false, is fulllscreen mode.
 
-	////Create swap chain device/context
+	//Create swap chain device/context
 
-	//D3D11CreateDeviceAndSwapChain(
-	//	nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
-	//	nullptr, 0, D3D11_SDK_VERSION, &swapChainDesc,
-	//	&m_swapChain, &m_device, nullptr, &m_deviceContext);
+	D3D11CreateDeviceAndSwapChain(
+		nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, 0,
+		nullptr, 0, D3D11_SDK_VERSION, &swapChainDesc,
+		&m_swapChain, &m_device, nullptr, &m_deviceContext);
 
 	HRESULT res = D2D1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, &factory);
 	if (res != S_OK) return false;
