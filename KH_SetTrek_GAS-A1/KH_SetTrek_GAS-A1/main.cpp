@@ -41,9 +41,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		return 1;
 	}
 
+	float width = 0;
+	float height = 0;
+	if (GetClientRect(windowhandle, &rect))
+	{
+		width = float(rect.right - rect.left);
+		height = float(rect.bottom - rect.top);
+	}
+
 
 	graphics = new Graphics();
-	//graphics->SetWindowSize(rect);
+	graphics->SetWindowSize(rect);
 	if (!graphics->Init(windowhandle))
 	{
 		delete graphics;
@@ -55,8 +63,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	GameController::LoadInitialLevel(new Level1());
 
 	Level1* myLevel = new Level1();
-	//myLevel->SetWindowWidth(width);
-	//myLevel->SetWindowHeight(height);
+	myLevel->SetWindowWidth(width);
+	myLevel->SetWindowHeight(height);
 
 	MSG message;
 	message.message = WM_NULL; //Do not have this set to WM_QUIT, which has a specific context

@@ -66,13 +66,30 @@ void Graphics::ClearScreen(float r, float g, float b)
 	rendertarget->Clear(D2D1::ColorF(r, g, b));
 }
 
+/**
+* \brief Get the window size
+* \return RECT - The window size
+*/
+RECT Graphics::GetWindowSize(void)
+{
+	return windowSize;
+}
+
+/**
+* \brief Set the window size
+*/
+void Graphics::SetWindowSize(RECT size)
+{
+	windowSize = size;
+	windowWidth = size.right - size.left;
+	windowHeight = size.bottom - size.top;
+}
+
 float Graphics::GetWindowWidth(void)
 {
-	return 0;
-	//return windowWidth;
+	return windowWidth;
 }
 float Graphics::GetWindowHeight(void)
 {
-	return 0;
-	//return windowHeight;
+	return windowHeight;
 }

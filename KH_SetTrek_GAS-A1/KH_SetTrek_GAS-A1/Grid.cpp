@@ -1,5 +1,5 @@
-#include "Grid.h"
 
+#include "Grid.h"
 
 
 /**
@@ -61,16 +61,12 @@ void Grid::ConstructGrid(void)
 	{
 		for (col = 0; col < kNumberOfGrid; ++col)
 		{
-			// The pair takes in pair coordinates: (x, y), (col, row)
-			// The col is along the X-axis
-			// The row is along the Y-axis
-			vector2 vCoord = { col*  gridWidth, row * gridHeight };
-			grid.push_back(vCoord);
+			coordinates.first = col * gridWidth;
+			coordinates.second = row * gridHeight;
+			grid.push_back(coordinates);
 		}
 	}
 }
-
-
 /**
 * \brief Generate random coordinates for Planet spawning.
 * \details The grid points are chosen at random. There is an
@@ -78,6 +74,7 @@ void Grid::ConstructGrid(void)
 */
 void Grid::GenerateRandCoord(void)
 {
+	srand((unsigned)time(NULL));
 	bool isSpawn = false;
 	randGrid.clear();
 
@@ -86,23 +83,45 @@ void Grid::GenerateRandCoord(void)
 	// that a planet will spawn...
 	for (int i = 0; i < grid.size(); ++i)
 	{
-		if (i != kPlayerSpawn)
-		{
+
 			isSpawn = (rand() % 100) < kPlanetSpawnChance;
 
 			if (isSpawn)
 			{
 				// These are the chosen grid positions 
 				// where a planet is going to be drawn at
-				vector2 vCoord = { grid[i].x, grid[i].y };
-				randGrid.push_back(vCoord);
+				coordinates.first = grid[i].first;
+				coordinates.second = grid[i].second;
+				randGrid.push_back(coordinates);
 
 				isSpawn = false;
 			}
-		}
 	}
 }
 
+/**
+* \brief This method place all planet to a vector and place grid value and planet to another vector.
+* \details This method place all planet to a vector and and randomly picked planet and  corronsponding grid values
+* \ in a vector that cah have a planet.
+* \param Nothing
+* \return Nothing
+*/
+void Grid::PlanetStore()
+{
+	srand((unsigned)time(NULL));
+	int randomPlanet = 0;
+
+
+	int index = 0;;
+	for (index = 0; index < randGrid.size(); index++)
+	{
+		randomPlanet = (rand() % 3 + 1);
+
+		gridPlanet.first = index;
+		gridPlanet.second = randomPlanet;//randomPlanet;
+		gplCombination.push_back(gridPlanet);
+	}
+}
 
 //-Accessors
 float Grid::GetWindowWidth(void) const {
@@ -110,4 +129,32 @@ float Grid::GetWindowWidth(void) const {
 }
 float Grid::GetWindowHeight(void) const {
 	return windowHeight;
+}
+
+float Grid::GetWidth(void) const {
+	return gridWidth;
+}
+float Grid::GetHeight(void) const {
+	return gridHeight;
+}
+
+int Grid::GetNumRows(void) const {
+	return numOfRows;
+}
+int Grid::GetNumCols(void) const {
+	return numOfCols;
+}
+
+int Grid::GetGridNum(void) const {
+	return (int)grid.size();
+}
+int Grid::GetRandCoordSize(void) const {
+	return (int)randGrid.size();
+}
+
+vector<pair<float, float>> Grid::GetGrid(void) const {
+	return grid;
+}
+vector<pair<float, float>> Grid::GetRandCoord(void) const {
+	return randGrid;
 }

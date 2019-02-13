@@ -76,6 +76,19 @@ SpriteSheet::~SpriteSheet()
 	if (bmp) bmp->Release();
 }
 
+void SpriteSheet::ApplyChromaEffect()
+{
+	ID2D1Effect *effect = NULL;
+	gfx->GetDeviceContext()->CreateEffect(CLSID_D2D1ChromaKey, &effect);
+
+	effect->SetInput(0, bmp);
+	effect->SetValue(D2D1_CHROMAKEY_PROP_COLOR, D2D1::Vector3F(0.0f, 1.0f, 0.0f));
+	effect->SetValue(D2D1_CHROMAKEY_PROP_TOLERANCE, 0.2f);
+	effect->SetValue(D2D1_CHROMAKEY_PROP_INVERT_ALPHA, false);
+	effect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
+}
+
+
 void SpriteSheet::Draw()
 {
 	ID2D1Effect *chromakeyEffect = NULL;
@@ -106,15 +119,40 @@ void SpriteSheet::Draw()
 		//
 }
 
-void SpriteSheet::DrawBackground(float left, float top, float right, float bottum)
+void SpriteSheet::DrawPlanet(float left, float top)
+{
+
+	ID2D1Effect *chromakeyEffect = NULL;
+
+	D2D1_VECTOR_3F vector{ 0.0f, 1.0f, 0.0f };
+	gfx->GetDeviceContext()->CreateEffect(CLSID_D2D1ChromaKey, &chromakeyEffect);
+
+	chromakeyEffect->SetInput(0, bmp);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_COLOR, vector);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_TOLERANCE, 0.8f);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_INVERT_ALPHA, false);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
+
+	gfx->GetDeviceContext()->DrawImage(chromakeyEffect,
+		D2D1::Point2F(left, top));
+
+}
+
+
+void SpriteSheet::DrawBackground(float left, float top, float right, float bottom)
 {
 	gfx->GetRenderTarget()->DrawBitmap(
 		bmp, //Bitmap we built from WIC
-		D2D1::RectF(left, top, right, bottum),    //Destination rectangle
+		D2D1::RectF(left, top, right, bottom),    //Destination rectangle
 		0.8f, //Opacity or Alpha
 		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
 		//Above - the interpolation mode to use if this object is 'stretched' or 'shrunk'. 
 		//Refer back to lecture notes on image/bitmap files
 		D2D1::RectF(0.0f, 0.0f, gfx->GetWindowWidth(), gfx->GetWindowHeight()) //Source Rect
 	);
+}
+
+ID2D1Bitmap* SpriteSheet::GetBitmap(void)
+{
+	return bmp;
 }

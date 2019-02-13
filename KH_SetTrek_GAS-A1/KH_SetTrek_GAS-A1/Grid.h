@@ -1,4 +1,4 @@
-#pragma once
+
 #pragma once
 #include <time.h>
 #include <vector>
@@ -16,16 +16,7 @@ using namespace std;
 #define kWindowPadding      1.0f
 
 #define kPlanetPadding      5.0f
-#define kPlanetSpawnChance  2
-
-// MACRO to calculate Player's spawn position
-#define kPlayerSpawn        (kNumberOfGrid * ((unsigned int)(kNumberOfGrid * 0.5) - 1))
-
-// MACRO for the Klingon spawn position
-#define kEnemySpawn         (kNumberOfGrid * ((unsigned int)(kNumberOfGrid * 0.5) - 1) + (kMaximumRow - 1))
-
-#define kMiddleGrid         (kNumberOfGrid * ((unsigned int)(kNumberOfGrid * 0.5) - 1) + (4))
-
+#define kPlanetSpawnChance  5
 
 //=============================
 // GRAPHIC STRUCT DEFINITIONS
@@ -53,10 +44,14 @@ private:
 	int numOfRows;					//!< The number of rows that comprises of the grid
 	int numOfCols;					//!< The number of cols that comprises of the grid
 
-	vector<vector2> grid;			//!< Contains the absolute position for the 10 by 10 grid. There are 100 squares in total
-	vector<vector2> randGrid;		//!< Contains the grid coordinates of where a random planet may spawn
 
 public:
+
+	pair<float, float> coordinates;
+	pair< int, int> gridPlanet;
+	vector<pair<float, float>> grid;			//!< Contains the absolute position for the 10 by 10 grid. There are 100 squares in total
+	vector<pair<float, float>> randGrid;		//!< Contains the grid coordinates of where a random planet may spawn
+	vector <pair <int, int>> gplCombination;  //strore picked grid value and corrosponding planet to place
 
 	//-Constructors
 	Grid(void);
@@ -73,4 +68,16 @@ public:
 	float GetWindowWidth(void) const;
 	float GetWindowHeight(void) const;
 
+	float GetWidth(void) const;
+	float GetHeight(void) const;
+
+	int GetNumRows(void) const;
+	int GetNumCols(void) const;
+
+	int GetGridNum(void) const;
+	int GetRandCoordSize(void) const;
+
+	vector<pair<float, float>> GetGrid(void) const;
+	vector<pair<float, float>> GetRandCoord(void) const;
+	void PlanetStore();
 };
