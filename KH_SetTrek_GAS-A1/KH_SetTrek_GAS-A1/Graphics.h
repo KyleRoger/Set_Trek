@@ -17,16 +17,6 @@
 #include <d2d1effecthelpers.h>
 #include <d3d11.h>
 
-//=============================
-// GRAPHIC STRUCT DEFINITIONS
-//=============================
-struct VECTOR2
-{
-	float x;
-	float y;
-} typedef vector2;
-
-
 class Graphics
 {
 	//Below, these are all COM interfaces we're using to create D2D resources.

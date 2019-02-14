@@ -6,31 +6,6 @@
 using namespace std;
 
 
-
-//===================
-// CONSTANTS
-//===================
-#define kNumberOfGrid		10
-#define kMaximumRow         (kNumberOfGrid)
-#define kCenterGrid			49
-#define kWindowPadding      1.0f
-
-#define kPlanetPadding      5.0f
-#define kPlanetSpawnChance  5
-
-//=============================
-// GRAPHIC STRUCT DEFINITIONS
-//=============================
-
-//===================
-// CLASS
-//===================
-/**
-* \class Grid
-* \brief The Grid object has methods and functionalities to manipulate a grid.
-* \details This grid is used within the game level. It allows for game objects
-*	to be mapped to a defined point.
-*/
 class Grid
 {
 private:
@@ -48,10 +23,10 @@ private:
 public:
 
 	pair<float, float> coordinates;
-	pair< int, int> gridPlanet;
+	pair< int, int> selectedPlanetLocID;
 	vector<pair<float, float>> grid;			//!< Contains the absolute position for the 10 by 10 grid. There are 100 squares in total
-	vector<pair<float, float>> randGrid;		//!< Contains the grid coordinates of where a random planet may spawn
-	vector <pair <int, int>> gplCombination;  //strore picked grid value and corrosponding planet to place
+	vector<pair<float, float>> selectCoord;		//!< Contains the grid coordinates of where a random planet may spawn
+	vector <pair <int, int>> PlanetLocations;  //strore picked grid value and corrosponding planet to place
 
 	//-Constructors
 	Grid(void);
@@ -62,7 +37,7 @@ public:
 
 	//-Methods
 	void ConstructGrid(void);
-	void GenerateRandCoord(void);
+	void CreateRandomCoordinates(void);
 
 	//-Accessors
 	float GetWindowWidth(void) const;
@@ -79,5 +54,5 @@ public:
 
 	vector<pair<float, float>> GetGrid(void) const;
 	vector<pair<float, float>> GetRandCoord(void) const;
-	void PlanetStore();
+	void PlanetRandomize();
 };

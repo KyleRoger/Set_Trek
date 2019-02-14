@@ -19,23 +19,16 @@ private:
 
 	Graphics* gfx; //Reference to the Graphics class
 	ID2D1Bitmap* bmp; //This will hold our loaded and converted Bitmap file
-	ID2D1Effect* effect;
+	ID2D1Effect* chromaKeyEffect;
 	SpriteSheet* image;
-
-
-	float shipAngle;
-	float energyLevel;
-
-	bool isDead;
-	bool isShooting;
 
 public:
 
-	Starship(Graphics* gfx, float startPosX, float startPosY);
+	Starship(Graphics* gfx);
 	~Starship();
 
 	void InitImage(const wchar_t* filename);
-	void ChromaEffect(float r, float g, float b);
+	void ShipChromaKey(float r, float g, float b);
 
 	void Draw(float left, float top);
 

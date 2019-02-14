@@ -2,11 +2,7 @@
 #include "Grid.h"
 
 
-/**
-* \brief The default Grid constructor.
-* \param None
-* \return None
-*/
+
 Grid::Grid(void)
 {
 	windowWidth = 0.0f;
@@ -19,19 +15,12 @@ Grid::Grid(void)
 }
 
 
-/**
-* \brief A Grid constructor taking 2 parameters.
-* \details The 2 parameters are floats for window sizes.
-* \param width - float - The width of the window
-* \param height - float - The height of the window
-* \return None
-*/
 Grid::Grid(float width, float height)
 {
 	windowWidth = width;
 	windowHeight = height;
-	gridWidth = windowWidth / kNumberOfGrid;
-	gridHeight = windowHeight / kNumberOfGrid;
+	gridWidth = windowWidth / 10;
+	gridHeight = windowHeight / 10;
 
 	numOfRows = 0;
 	numOfCols = 0;
@@ -46,20 +35,15 @@ Grid::~Grid(void)
 }
 
 
-/**
-* \brief Construct the space grid.
-* \details The calculation for the space grids are
-*       found by each row and column. Initially the an
-*       individual grid with and grid height is found.
-*/
+
 void Grid::ConstructGrid(void)
 {
 	int row = 0;
 	int col = 0;
 
-	for (row = 0; row < kNumberOfGrid; ++row)
+	for (row = 0; row < 10; ++row)
 	{
-		for (col = 0; col < kNumberOfGrid; ++col)
+		for (col = 0; col < 10; ++col)
 		{
 			coordinates.first = col * gridWidth;
 			coordinates.second = row * gridHeight;
@@ -67,63 +51,55 @@ void Grid::ConstructGrid(void)
 		}
 	}
 }
-/**
-* \brief Generate random coordinates for Planet spawning.
-* \details The grid points are chosen at random. There is an
-*       approximately 5% chance that a Planet will spawn at the grid point.
-*/
-void Grid::GenerateRandCoord(void)
+
+
+void Grid::CreateRandomCoordinates(void)
 {
 	srand((unsigned)time(NULL));
-	bool isSpawn = false;
-	randGrid.clear();
+	int planetSpawn = 0;
+	selectCoord.clear();
 
-	// For each grid position, calculate the chance
-	// for a planet to spawn. There is a 1 in 20 (5%) chance
-	// that a planet will spawn...
+
 	for (int i = 0; i < grid.size(); ++i)
 	{
 
-			isSpawn = (rand() % 100) < kPlanetSpawnChance;
+			planetSpawn = (rand() % 20 + 1);
 
-			if (isSpawn)
+			if (planetSpawn == 10)
 			{
-				// These are the chosen grid positions 
-				// where a planet is going to be drawn at
 				coordinates.first = grid[i].first;
 				coordinates.second = grid[i].second;
-				randGrid.push_back(coordinates);
-
-				isSpawn = false;
+				selectCoord.push_back(coordinates);
 			}
 	}
 }
 
-/**
-* \brief This method place all planet to a vector and place grid value and planet to another vector.
-* \details This method place all planet to a vector and and randomly picked planet and  corronsponding grid values
-* \ in a vector that cah have a planet.
-* \param Nothing
-* \return Nothing
-*/
-void Grid::PlanetStore()
+//Name: Planet Locations
+//Purpose: The purpose of this method is to randomly assign a planet to the
+//			corresponding grid location that planets are going to be 
+//			populated for. This method creates a vecor that contains a pair.
+//			This pairs initial number corresponding to the grid index, the
+//			second number is the choice in planet.
+void Grid::PlanetRandomize()
 {
 	srand((unsigned)time(NULL));
-	int randomPlanet = 0;
+	int randomPlanet = 0; //Will correspond to one of three random planets.
+	int index = 0; //Will correspond to the current grid location
 
-
-	int index = 0;;
-	for (index = 0; index < randGrid.size(); index++)
+	//Loop through selectCoord which contains the randomly selected
+	//grid coordinate locations that are going to populated with planets.
+	for (index = 0; index < selectCoord.size(); index++)
 	{
-		randomPlanet = (rand() % 3 + 1);
+		randomPlanet = (rand() % 3 + 1); //Give the planets a value of 1,2,3
+										//corresponding to different planets.
 
-		gridPlanet.first = index;
-		gridPlanet.second = randomPlanet;//randomPlanet;
-		gplCombination.push_back(gridPlanet);
+		selectedPlanetLocID.first = index; //Index is the grid location.
+		selectedPlanetLocID.second = randomPlanet;//The planet to display.
+		PlanetLocations.push_back(selectedPlanetLocID); //Pair placed in vector.
 	}
 }
 
-//-Accessors
+
 float Grid::GetWindowWidth(void) const {
 	return windowWidth;
 }
@@ -149,12 +125,12 @@ int Grid::GetGridNum(void) const {
 	return (int)grid.size();
 }
 int Grid::GetRandCoordSize(void) const {
-	return (int)randGrid.size();
+	return (int)selectCoord.size();
 }
 
 vector<pair<float, float>> Grid::GetGrid(void) const {
 	return grid;
 }
 vector<pair<float, float>> Grid::GetRandCoord(void) const {
-	return randGrid;
+	return selectCoord;
 }

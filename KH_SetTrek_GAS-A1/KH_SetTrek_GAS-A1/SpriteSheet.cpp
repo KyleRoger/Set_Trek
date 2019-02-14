@@ -105,18 +105,6 @@ void SpriteSheet::Draw()
 	gfx->GetDeviceContext()->DrawImage(chromakeyEffect);
 
 	if (chromakeyEffect) chromakeyEffect->Release();
-
-	 //gfx->GetRenderTarget()->DrawBitmap(
-		//bmp, //Bitmap we built from WIC
-		//D2D1::RectF(0.0f, 0.0f,
-		//	bmp->GetSize().width, bmp->GetSize().height), //Destination rectangle
-		//0.8f, //Opacity or Alpha
-		//D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		//Above - the interpolation mode to use if this object is 'stretched' or 'shrunk'.
-		//Refer back to lecture notes on image/bitmap files
-		//D2D1::RectF(0.0f, 0.0f, bmp->GetSize().width, bmp->GetSize().height) //Source Rect
-		//);
-		//
 }
 
 void SpriteSheet::DrawPlanet(float left, float top)
@@ -138,17 +126,14 @@ void SpriteSheet::DrawPlanet(float left, float top)
 
 }
 
-
-void SpriteSheet::DrawBackground(float left, float top, float right, float bottom)
+//Name:DrawBackground
+//Purpose: To set the background of the window and allow for resize by getting 
+//			window height and width.
+void SpriteSheet::DrawBackground(float right, float bottom)
 {
-	gfx->GetRenderTarget()->DrawBitmap(
-		bmp, //Bitmap we built from WIC
-		D2D1::RectF(left, top, right, bottom),    //Destination rectangle
-		0.8f, //Opacity or Alpha
-		D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
-		//Above - the interpolation mode to use if this object is 'stretched' or 'shrunk'. 
-		//Refer back to lecture notes on image/bitmap files
-		D2D1::RectF(0.0f, 0.0f, gfx->GetWindowWidth(), gfx->GetWindowHeight()) //Source Rect
+	gfx->GetRenderTarget()->DrawBitmap(bmp, D2D1::RectF(0, 0, right, bottom),   
+		1.0f, D2D1_BITMAP_INTERPOLATION_MODE::D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR,
+		D2D1::RectF(0.0f, 0.0f, gfx->GetWindowWidth(), gfx->GetWindowHeight())
 	);
 }
 

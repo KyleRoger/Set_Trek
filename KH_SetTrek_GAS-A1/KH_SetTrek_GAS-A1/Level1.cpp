@@ -11,35 +11,33 @@ void Level1::Load()
 	gridWidth = windowWidth / 10;
 	gridHeight = windowHeight / 10;
 
-	y = 0.0f;
-	y = ySpeed = 0.0f;
+	//Create the objects with the images gicen in the assignement
 	background = new SpriteSheet(L"Images\\SectorBackground.bmp", gfx); //This is where we can specify our file system object!
 	planet1 = new SpriteSheet(L"Images\\Planet1.bmp", gfx);
 	planet2 = new SpriteSheet(L"Images\\Planet2.bmp", gfx);
 	planet3 = new SpriteSheet(L"Images\\Planet3.bmp", gfx);
-	//shipBaseTest = new SpriteSheet(L"Images\\shipBase.bmp", gfx);
-
-	// Creating the Starship objects
-	shipDetails = new Starship(gfx, 0, 384);
-	shipBase = new Starship(gfx, 0, 384);
-	// Loading the image resources
+	shipDetails = new Starship(gfx);
+	shipBase = new Starship(gfx);
 	shipDetails->InitImage(L"Images\\ShipDetail.bmp");
 	shipBase->InitImage(L"Images\\ShipBase.bmp");
 
+	//Chroma Key the planets
 	planet1->ApplyChromaEffect();
 	planet2->ApplyChromaEffect();
 	planet3->ApplyChromaEffect();
-	//shipBaseTest->ApplyChromaEffect();
 
-	shipBase->ChromaEffect(0.0f, 1.0f, 0.0f);
-	shipDetails->ChromaEffect(0.0f, 1.0f, 0.0f);
+	//Apply the Chroma Key to the shipBase and shipDetails.
+	shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
+	shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
 
+	//Move the player forward
 	moving->PlayerMove();
 
+	//Create a grid, construct it, create random coordinates and randomize the planets.
 	newGrid = new Grid(windowWidth,windowHeight);
 	newGrid->ConstructGrid();
-	newGrid->GenerateRandCoord();
-	newGrid->PlanetStore();
+	newGrid->CreateRandomCoordinates();
+	newGrid->PlanetRandomize();
 
 }
 
@@ -54,16 +52,23 @@ void Level1::Unload()
 	delete shipDetails;
 }
 
-
+//Name: Update
+//Purpose: The purpose of this method is to update the game state. This is repeatedly
+//			called within the fame loop and moves the ship from one side of the screen
+//			to the next. The thread sleeps for 0.5 seconds and then continues to 
+//			update the game state, move the player and potenttially re-randomize
+//			the planets.
 void Level1::Update()
 {
+	//Sleep the program for half a second.
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	moving->PlayerMove();
-	int position = moving->GetCurrentPositionPS();
-	if (position == 50)
+	moving->PlayerMove(); //Move the player one step forward.
+	int position = moving->GetCurrentPositionPS(); //Get player location.
+	if (position == 50) //If the player position is at the start. Randomize planets.
 	{
-		newGrid->GenerateRandCoord();
-		newGrid->PlanetStore();
+		newGrid->CreateRandomCoordinates(); //Generate a new set of coordinates
+		newGrid->PlanetRandomize(); //Re-randomize which planet are placed on
+									//above randomly generated coordinates.
 	}
 
 }
@@ -76,23 +81,13 @@ float Level1::GetWindowHeight(void)
 {
 	return windowHeight;
 }
-/**
-* \brief This method set value for window width.
-* \details This method set value for window width.
-* \param FLOAT- width
-* \return Nothing
-*/
+
 void Level1::SetWindowWidth(float width)
 {
 	windowWidth = width;
 
 }
-/**
-* \brief This method set value for window height.
-* \details This method set value for window height.
-* \param FLOAT- height
-* \return Nothing
-*/
+
 void Level1::SetWindowHeight(float height)
 {
 	windowHeight = height;
@@ -102,25 +97,25 @@ void Level1::SetWindowHeight(float height)
 void Level1::Render()
 {
 	gfx->ClearScreen(0.0f, 0.0f, 0.5f);
-	background->DrawBackground(0, 0, windowWidth, windowHeight);
+	background->DrawBackground(windowWidth, windowHeight);
 
-	for (int i = 0; i < newGrid->randGrid.size(); i++)
+	for (int i = 0; i < newGrid->selectCoord.size(); i++)
 	{
 
-		if (newGrid->gplCombination[i].second == 1)
+		if (newGrid->PlanetLocations[i].second == 1)
 		{
-			planet1->DrawPlanet(newGrid->randGrid[i].first, newGrid->randGrid[i].second);
+			planet1->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
 		}
-		if (newGrid->gplCombination[i].second == 2)
+		if (newGrid->PlanetLocations[i].second == 2)
 		{
-			planet2->DrawPlanet(newGrid->randGrid[i].first, newGrid->randGrid[i].second);
+			planet2->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
 		}
-		if (newGrid->gplCombination[i].second == 3)
+		if (newGrid->PlanetLocations[i].second == 3)
 		{
-			planet3->DrawPlanet(newGrid->randGrid[i].first, newGrid->randGrid[i].second);
+			planet3->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
 		}
 	}
-	//shipBaseTest->Draw();
+
 	shipBase->Draw(newGrid->grid[moving->GetCurrentPositionPS()].first, newGrid->grid[moving->GetCurrentPositionPS()].second);
 	shipDetails->Draw(newGrid->grid[moving->GetCurrentPositionPS()].first, newGrid->grid[moving->GetCurrentPositionPS()].second);
 

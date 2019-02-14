@@ -2,7 +2,6 @@
 
 #include <wincodec.h> //This is the WIC codec header - we need this to decode image files
 #include "Graphics.h" //This includes both Windows and D2D libraries
-//Remember to add "windowscodecs.lib" to your Linker/Input/AdditionalDependencies
 
 class SpriteSheet
 {
@@ -18,7 +17,7 @@ public:
 	~SpriteSheet();
 
 	//Draw bitmap to the render target
-	void DrawBackground(float left, float top, float right, float bottom);
+	void DrawBackground(float right, float bottom);
 	void Draw();
 	void DrawPlanet(float left, float top);
 	void ApplyChromaEffect();

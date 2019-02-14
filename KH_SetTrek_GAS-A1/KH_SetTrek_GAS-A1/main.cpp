@@ -62,9 +62,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	ShowWindow(windowhandle, nCmdShow);
 	GameController::LoadInitialLevel(new Level1());
 
-	Level1* myLevel = new Level1();
-	myLevel->SetWindowWidth(width);
-	myLevel->SetWindowHeight(height);
+	Level1* theLevel = new Level1();
+	theLevel->SetWindowWidth(width);
+	theLevel->SetWindowHeight(height);
 
 	MSG message;
 	message.message = WM_NULL; //Do not have this set to WM_QUIT, which has a specific context
@@ -76,7 +76,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		else
 		{
 			//Update Routine... we've moved the code for handling updates to GameController
-			GameController::Update();
+			GameController::Update(); //Whrere the screen is updated.
 
 			//Render Routine... This is very modular. GameController now handles the rendering
 			graphics->BeginDraw();

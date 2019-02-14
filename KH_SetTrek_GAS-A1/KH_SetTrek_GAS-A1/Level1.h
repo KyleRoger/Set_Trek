@@ -14,8 +14,7 @@ class Level1 : public GameLevel
 	float windowHeight;
 	float gridWidth;
 	float gridHeight;
-	float y;
-	float ySpeed;
+
 	Movement* moving = new Movement(windowWidth, windowHeight);
 	SpriteSheet* background;
 	SpriteSheet* planet1;

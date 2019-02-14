@@ -29,7 +29,7 @@ Graphics::~Graphics()
 // methods, their parameters, returns and so on.
 bool Graphics::Init(HWND windowHandle)
 {
-	//swap chain
+	////swap chain
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = { 0 };
 	swapChainDesc.BufferCount = 1; //Sets it to double buffering
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

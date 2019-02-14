@@ -13,15 +13,12 @@
 Movement::Movement(float width, float height)
 {
 
-	currentPositionPS= 50;      //current position of player ship
+	currentPositionPS = 50;      //current position of player ship
 	windowWidth = width;
 	windowHeight = height;
 }
 
-/**
-* \brief Basic destructor for the Movement class.
-* \details it will release the objects end of the game.
-*/
+
 Movement::~Movement()
 {
 
@@ -54,32 +51,27 @@ float Movement::GetWindowHeight(void)
 }
 
 
-/**
-* \brief move the player ship.
-* \details Calls upon a D2D1 method to specify the location of image file.
-* \param: pair mouseP
-*         pair endP
-* \return Nothing
-*/
-
+//Name: PlayerMove
+//Purpose: The purpose of this method is to move the ship
+//			to the next set square on the grid. If the ship
+//			has reached the end of the screen, it will be 
+//			reset to start at the front again.
 void Movement::PlayerMove()
 {
 
-	int playerPosition = 0;
-	playerPosition = GetCurrentPositionPS();
+	int playerPosition = 0; //Storing the players position
+	playerPosition = GetCurrentPositionPS();//Accessing position
 	
 
-	if (playerPosition == 59)
+	if (playerPosition == 59) //End of screen position.
 	{
-		playerPosition = 50;
-		SetCurrentPositionPS(playerPosition);
-
+		playerPosition = 50; //Reset to start of screen.
+		SetCurrentPositionPS(playerPosition); //Set new position
 	}
-	
 	else
 	{
-		playerPosition += 1;
-		SetCurrentPositionPS(playerPosition);
+		playerPosition += 1; //Increase player position.
+		SetCurrentPositionPS(playerPosition); //Set the position
 	}
 }
 
@@ -89,12 +81,7 @@ int Movement::GetCurrentPositionPS()
 	return currentPositionPS;
 
 }
-/**
-* \brief This method set value for current Position for player ship.
-* \details This method set value for  current Position for player ship.
-* \param pair FLOAT, FOLAT- playerShipPosition
-* \return Nothing
-*/
+
 void Movement::SetCurrentPositionPS(int playerShipPosition)
 {
 	currentPositionPS = playerShipPosition;
