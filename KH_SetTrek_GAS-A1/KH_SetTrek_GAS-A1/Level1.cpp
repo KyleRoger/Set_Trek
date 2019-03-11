@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Grid.h"
 #include "Level1.h"
+#include "Mouse.h"
 
 void Level1::Load()
 {
@@ -18,8 +19,12 @@ void Level1::Load()
 	planet3 = new SpriteSheet(L"Images\\Planet3.bmp", gfx);
 	shipDetails = new Starship(gfx);
 	shipBase = new Starship(gfx);
+	enemyShip = new Starship(gfx);
 	shipDetails->InitImage(L"Images\\ShipDetail.bmp");
 	shipBase->InitImage(L"Images\\ShipBase.bmp");
+	enemyShip->InitImage(L"Images\\EnemyShip.bmp");
+
+
 
 	//Chroma Key the planets
 	planet1->ApplyChromaEffect();
@@ -30,8 +35,10 @@ void Level1::Load()
 	shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
 	shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
 
+	enemyShip->ShipChromaKey(0.0f, 0.0f, 1.0f);
+
 	//Move the player forward
-	moving->PlayerMove();
+	//moving->PlayerMove();
 
 	//Create a grid, construct it, create random coordinates and randomize the planets.
 	newGrid = new Grid(windowWidth,windowHeight);
@@ -50,6 +57,7 @@ void Level1::Unload()
 	delete planet3;
 	delete shipBase;
 	delete shipDetails;
+	delete enemyShip;
 }
 
 //Name: Update
@@ -61,15 +69,19 @@ void Level1::Unload()
 void Level1::Update()
 {
 	//Sleep the program for half a second.
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	moving->PlayerMove(); //Move the player one step forward.
-	int position = moving->GetCurrentPositionPS(); //Get player location.
-	if (position == 50) //If the player position is at the start. Randomize planets.
-	{
-		newGrid->CreateRandomCoordinates(); //Generate a new set of coordinates
-		newGrid->PlanetRandomize(); //Re-randomize which planet are placed on
-									//above randomly generated coordinates.
-	}
+	//std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	pair<float, float> mousePlace;
+	mousePlace.first = Mouse::mouseX;
+	mousePlace.second = Mouse::mouseY;
+	moving->PlayerMove(mousePlace); //Move the player one step forward.
+
+	//int position = moving->GetCurrentPositionPS(); //Get player location.
+	//if (position == 50) //If the player position is at the start. Randomize planets.
+	//{
+	//	newGrid->CreateRandomCoordinates(); //Generate a new set of coordinates
+	//	newGrid->PlanetRandomize(); //Re-randomize which planet are placed on
+	//								//above randomly generated coordinates.
+	//}
 
 }
 
@@ -116,9 +128,10 @@ void Level1::Render()
 		}
 	}
 
-	shipBase->Draw(newGrid->grid[moving->GetCurrentPositionPS()].first, newGrid->grid[moving->GetCurrentPositionPS()].second);
-	shipDetails->Draw(newGrid->grid[moving->GetCurrentPositionPS()].first, newGrid->grid[moving->GetCurrentPositionPS()].second);
+	shipBase->Draw(moving->GetShipBStart().first, moving->GetShipBStart().second);
+	shipDetails->Draw(moving->GetShipDStart().first, moving->GetShipDStart().second);
 
+	enemyShip->Draw(1, 1);
 
 }
 

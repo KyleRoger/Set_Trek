@@ -13,8 +13,10 @@ private:
 	float gridWidth;
 	float gridHeight;
 
-	int currentPositionPS;      //get the current position of player ship
+	pair<float,float> currentPositionPS;      //get the current position of player ship
 
+	pair<float, float> shipBStart;              //direction of shipbase
+	pair<float, float> shipDStart;			//Ship details direction
 
 public:
 
@@ -22,17 +24,21 @@ public:
 
 	~Movement(void);
 
+	pair<float, float> GetShipDStart();
+	pair<float, float> GetShipBStart();
+	
+
 
 	void SetWindowWidth(float width);
 	void SetWindowHeight(float height);
-	int GetCurrentPositionPS();
+	pair<float,float> GetCurrentPositionPS();
 	Grid* moveGrid;
 	Grid* planetGrid = new Grid(windowWidth, windowHeight);
 
 
-	void SetCurrentPositionPS(int playerShipPosition);
+	void SetCurrentPositionPS(pair<float,float> playerShipPosition);
 
-	void PlayerMove(void);
+	void PlayerMove(pair<float, float> mousePosition);
 
 	//-Getters
 	float GetWindowWidth(void);

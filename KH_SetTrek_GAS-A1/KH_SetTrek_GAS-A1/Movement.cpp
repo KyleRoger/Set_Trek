@@ -13,7 +13,7 @@
 Movement::Movement(float width, float height)
 {
 
-	currentPositionPS = 50;      //current position of player ship
+	//currentPositionPS = 50;      //current position of player ship
 	windowWidth = width;
 	windowHeight = height;
 }
@@ -56,33 +56,104 @@ float Movement::GetWindowHeight(void)
 //			to the next set square on the grid. If the ship
 //			has reached the end of the screen, it will be 
 //			reset to start at the front again.
-void Movement::PlayerMove()
+void Movement::PlayerMove(pair<float,float> mousePosition)
 {
+	pair <float, float> playerPosition;
+	playerPosition = GetCurrentPositionPS();
 
-	int playerPosition = 0; //Storing the players position
-	playerPosition = GetCurrentPositionPS();//Accessing position
-	
+	pair<float, float> cpt;
 
-	if (playerPosition == 59) //End of screen position.
+	// MOVE SHIP AUTOMATICALLY
+	if (mousePosition.first == 0 && mousePosition.second == 0)
 	{
-		playerPosition = 50; //Reset to start of screen.
-		SetCurrentPositionPS(playerPosition); //Set new position
+
+
+		//storing the player ship positions
+		cpt.first = shipBStart.first;
+		cpt.second = shipBStart.second;
+		SetCurrentPositionPS(cpt);
 	}
 	else
 	{
-		playerPosition += 1; //Increase player position.
-		SetCurrentPositionPS(playerPosition); //Set the position
+
+		if (playerPosition.first < mousePosition.first)
+		{
+			shipBStart.first++;
+			shipDStart.first++;
+
+			//storing current position
+			cpt.first = shipBStart.first;
+			cpt.second = shipBStart.second;
+			SetCurrentPositionPS(cpt);
+		}
+		if (playerPosition.first > mousePosition.first)
+		{
+			shipBStart.first--;
+			shipDStart.first--;
+
+			//storing current position
+			cpt.first = shipBStart.first;
+			cpt.second = shipBStart.second;
+			SetCurrentPositionPS(cpt);
+		}
+
+		if (playerPosition.second < mousePosition.second)
+		{
+			shipBStart.second++;
+			shipDStart.second++;
+
+			//storing current position
+			cpt.first = shipBStart.first;
+			cpt.second = shipBStart.second;
+			SetCurrentPositionPS(cpt);
+		}
+		if (playerPosition.second > mousePosition.second)
+		{
+			shipBStart.second--;
+			shipDStart.second--;
+
+			//storing current position
+			cpt.first = shipBStart.first;
+			cpt.second = shipBStart.second;
+			SetCurrentPositionPS(cpt);
+		}
+	}
+
+	// Restarting the Player ship on the left-side
+	if (shipBStart.first > 1024 || shipBStart.second > 768
+		|| shipBStart.first < 0 || shipBStart.second < 0)
+	{
+		shipBStart.first = 0;
+		shipBStart.first = shipBStart.first++;
+		shipBStart.second = 384;
+		shipDStart.first = 0;
+		shipDStart.first = shipDStart.second++;
+		shipDStart.second = 384;
+
+		cpt.first = shipBStart.first;
+		cpt.second = shipBStart.second;
+		SetCurrentPositionPS(cpt);
+
 	}
 }
 
+pair<float, float> Movement::GetShipDStart()
+{
+	return shipBStart;
+}
+pair<float, float> Movement::GetShipBStart()
+{
+	return shipBStart;
+}
 
-int Movement::GetCurrentPositionPS()
+
+pair<float,float> Movement::GetCurrentPositionPS()
 {
 	return currentPositionPS;
 
 }
 
-void Movement::SetCurrentPositionPS(int playerShipPosition)
+void Movement::SetCurrentPositionPS(pair<float,float> playerShipPosition)
 {
 	currentPositionPS = playerShipPosition;
 }

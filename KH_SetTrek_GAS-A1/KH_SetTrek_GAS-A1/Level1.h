@@ -23,6 +23,7 @@ class Level1 : public GameLevel
 	SpriteSheet* shipBaseTest;
 	Starship* shipBase;
 	Starship*  shipDetails;
+	Starship* enemyShip;
 	Grid* newGrid;
 
 

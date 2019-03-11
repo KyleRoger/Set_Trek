@@ -3,7 +3,7 @@
 #include "Graphics.h"
 #include "Level1.h"
 #include "GameController.h"
-
+#include "Mouse.h"
 Graphics* graphics;
 
 LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -14,7 +14,16 @@ LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
+	if (msg == WM_LBUTTONDOWN)
+	{
+		float x = LOWORD(lparam);
+		float y = HIWORD(lparam);
 
+		Mouse::mouseX = x;
+		Mouse::mouseY = y;
+		Mouse::IsClick = true;
+
+	}
 	return DefWindowProc(handle, msg, wparam, lparam);
 }
 
@@ -57,6 +66,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		delete graphics;
 		return -1;
 	}
+
+
+	Mouse::Init();
 
 	GameLevel::Init(graphics);
 	ShowWindow(windowhandle, nCmdShow);
