@@ -35,14 +35,14 @@ void GameController::Render()
 
 bool GameController::Update()
 {
-	bool gameEnd = false;
+	bool gameEnd;
+
 	if (Loading)
 	{
-		return gameEnd;
+		return gameEnd; //nice! Do not update or render if the scene is loading.
 	}
 	else
 	{
-		//nice! Do not update or render if the scene is loading.
 		gameEnd = currentLevel->Update();
 	}
 }

@@ -3,6 +3,7 @@
 #include <time.h>
 #include <vector>
 #include "Graphics.h"
+#include "SpriteSheet.h"
 using namespace std;
 
 
@@ -54,5 +55,5 @@ public:
 
 	vector<pair<float, float>> GetGrid(void) const;
 	vector<pair<float, float>> GetRandCoord(void) const;
-	void PlanetRandomize();
+	void PlanetRandomize(SpriteSheet* planet1, SpriteSheet* planet2, SpriteSheet* planet);
 };
