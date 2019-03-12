@@ -14,6 +14,7 @@ class Level1 : public GameLevel
 	float windowHeight;
 	float gridWidth;
 	float gridHeight;
+	bool gameStart;
 
 	Movement* moving = new Movement(windowWidth, windowHeight);
 	SpriteSheet* background;
@@ -30,7 +31,7 @@ class Level1 : public GameLevel
 public:
 	void Load() override;
 	void Unload() override;
-	void Update() override;
+	bool Update() override;
 	void Render() override;
 	float GetWindowWidth(void);
 	float GetWindowHeight(void);

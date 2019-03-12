@@ -6,7 +6,7 @@
 
 void Level1::Load()
 {
-
+	gameStart = true;
 	windowWidth = gfx->GetWindowWidth();
 	windowHeight = gfx->GetWindowHeight();
 	gridWidth = windowWidth / 10;
@@ -66,23 +66,15 @@ void Level1::Unload()
 //			to the next. The thread sleeps for 0.5 seconds and then continues to 
 //			update the game state, move the player and potenttially re-randomize
 //			the planets.
-void Level1::Update()
+bool Level1::Update()
 {
-	//Sleep the program for half a second.
-	//std::this_thread::sleep_for(std::chrono::milliseconds(500));
+	bool endGame = false;
 	pair<float, float> mousePlace;
 	mousePlace.first = Mouse::mouseX;
 	mousePlace.second = Mouse::mouseY;
 	moving->PlayerMove(mousePlace); //Move the player one step forward.
 
-	//int position = moving->GetCurrentPositionPS(); //Get player location.
-	//if (position == 50) //If the player position is at the start. Randomize planets.
-	//{
-	//	newGrid->CreateRandomCoordinates(); //Generate a new set of coordinates
-	//	newGrid->PlanetRandomize(); //Re-randomize which planet are placed on
-	//								//above randomly generated coordinates.
-	//}
-
+	return endGame;
 }
 
 float Level1::GetWindowWidth(void)
