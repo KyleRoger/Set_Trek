@@ -150,6 +150,7 @@
     <ClCompile Include="Movement.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
     <ClCompile Include="Starship.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameController.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="Movement.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="Starship.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

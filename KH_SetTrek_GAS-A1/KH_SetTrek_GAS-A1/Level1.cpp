@@ -1,6 +1,5 @@
 #include "GameController.h"
 #include "Graphics.h"
-#include "Grid.h"
 #include "Level1.h"
 #include "Mouse.h"
 
@@ -29,22 +28,31 @@ void Level1::Load()
 	//Chroma Key the planets
 	planet1->ApplyChromaEffect();
 	planet2->ApplyChromaEffect();
-	planet3->ApplyChromaEffect();
+planet3->ApplyChromaEffect();
 
-	//Apply the Chroma Key to the shipBase and shipDetails.
-	shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
-	shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
+//Apply the Chroma Key to the shipBase and shipDetails.
+shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
+shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
 
-	enemyShip->ShipChromaKey(0.0f, 0.0f, 1.0f);
+shipBase->SetXCoordinate(0.0);
+shipDetails->SetXCoordinate(0.0);
+shipBase->SetYCoordinate(windowHeight / 2);
+shipDetails->SetYCoordinate(windowHeight / 2);
 
-	//Move the player forward
-	//moving->PlayerMove();
+enemyShip->SetXCoordinate(windowWidth - gridWidth);
+enemyShip->SetYCoordinate(windowHeight / 2);
 
-	//Create a grid, construct it, create random coordinates and randomize the planets.
-	newGrid = new Grid(windowWidth,windowHeight);
-	newGrid->ConstructGrid();
-	newGrid->CreateRandomCoordinates();
-	newGrid->PlanetRandomize();
+enemyShip->ShipChromaKey(0.0f, 0.0f, 1.0f);
+
+//Move the player forward
+//moving->PlayerMove();
+
+//Create a grid, construct it, create random coordinates and randomize the planets.
+newGrid = new Grid(windowWidth, windowHeight);
+newGrid->ConstructGrid();
+newGrid->CreateRandomCoordinates();
+newGrid->PlanetRandomize(planet1, planet2, planet3);
+
 
 }
 
@@ -66,23 +74,123 @@ void Level1::Unload()
 //			to the next. The thread sleeps for 0.5 seconds and then continues to 
 //			update the game state, move the player and potenttially re-randomize
 //			the planets.
-void Level1::Update()
+bool Level1::Update()
 {
-	//Sleep the program for half a second.
-	//std::this_thread::sleep_for(std::chrono::milliseconds(500));
-	pair<float, float> mousePlace;
-	mousePlace.first = Mouse::mouseX;
-	mousePlace.second = Mouse::mouseY;
-	moving->PlayerMove(mousePlace); //Move the player one step forward.
 
-	//int position = moving->GetCurrentPositionPS(); //Get player location.
-	//if (position == 50) //If the player position is at the start. Randomize planets.
-	//{
-	//	newGrid->CreateRandomCoordinates(); //Generate a new set of coordinates
-	//	newGrid->PlanetRandomize(); //Re-randomize which planet are placed on
-	//								//above randomly generated coordinates.
-	//}
+	bool gameEnd = false;
 
+	if (shipBase->GetXCoordinate() + gridWidth >= windowWidth)
+	{
+		NewSector();
+		newGrid->CreateRandomCoordinates();
+		shipBase->SetIsMoving(false);
+		NewSector();
+	}
+	else
+	{
+		if (Mouse::mouseX > 0 && Mouse::mouseY > 0 && !(shipBase->GetIsMoving()))
+		{
+			SetShipDestination(Mouse::mouseX, Mouse::mouseY);
+		}
+		else if (shipBase->GetIsMoving())
+		{
+			SetShipPosition();
+
+			if (shipBase->GetIsMoving())
+			{
+				SetEnemyDest();
+				SetEnemyPos();
+			}
+
+			IsMoveFinished();
+		}
+	}
+
+	return gameEnd;
+}
+void Level1::IsMoveFinished()
+{
+	if (fabs(shipBase->GetXCoordinate() - shipBase->GetXDest()) < 5 &&
+		fabs(shipBase->GetYCoordinate() - shipBase->GetYDest() < 5))
+	{
+		shipBase->SetXCoordinate(shipBase->GetXDest());
+		shipDetails->SetXCoordinate(shipDetails->GetXDest());
+		shipBase->SetYCoordinate(shipBase->GetYDest());
+		shipDetails->SetYCoordinate(shipDetails->GetYDest());
+
+		shipBase->SetIsMoving(false);
+		shipDetails->SetIsMoving(false);
+	}
+}
+void Level1::SetShipPosition()
+{
+	shipBase->SetXCoordinate(shipBase->GetXCoordinate() + (shipBase->GetVector()->GetXRatio() * 5));
+	shipDetails->SetXCoordinate(shipDetails->GetXCoordinate() + (shipDetails->GetVector()->GetXRatio() * 5));
+	shipBase->SetYCoordinate(shipBase->GetYCoordinate() + (shipBase->GetVector()->GetYRatio() * 5));
+	shipDetails->SetYCoordinate(shipDetails->GetYCoordinate() + (shipDetails->GetVector()->GetYRatio() * 5));
+}
+
+void Level1::SetEnemyPos(void)
+{
+	if (enemyShip->GetVector()->GetMagnitude() <= ((windowWidth / 20) * 4) ||
+		enemyShip->GetVector()->GetMagnitude() <= ((windowHeight / 20) * 4))
+	{
+		enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 5.15));
+		enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 5.15));
+	}
+	else
+	{
+		enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 4));
+		enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 4));
+	}
+}
+
+void Level1::SetEnemyDest(void)
+{
+	enemyShip->SetXDest(shipBase->GetXCoordinate());
+	enemyShip->SetYDest(shipBase->GetYCoordinate());
+
+	enemyShip->GetVector()->XVectorLength(shipBase->GetXCoordinate(), enemyShip->GetXCoordinate());
+	enemyShip->GetVector()->YVectorLength(shipBase->GetYCoordinate(), enemyShip->GetYCoordinate());
+
+	enemyShip->GetVector()->FrameRatio(enemyShip->GetVector()->GetXVectorLength(), enemyShip->GetVector()->GetYVectorLength());
+}
+
+void Level1::ShipCollision(void)
+{
+
+}
+
+void Level1::PlanetTouched(void)
+{
+
+}
+
+void Level1::NewSector(void)
+{
+
+}
+
+void Level1::SetShipDestination(float x, float y)
+{
+	shipBase->SetXDest(x - (gridWidth / 2));
+	shipDetails->SetXDest(x - (gridWidth / 2));
+	shipBase->SetYDest(y - (gridHeight / 2));
+	shipDetails->SetYDest(y - (gridHeight / 2));
+
+	shipBase->GetVector()->XVectorLength(shipBase->GetXDest(), shipBase->GetXCoordinate());
+	shipDetails->GetVector()->XVectorLength(shipDetails->GetXDest(), shipDetails->GetXCoordinate());
+	shipBase->GetVector()->YVectorLength(shipBase->GetYDest(), shipBase->GetYCoordinate());
+	shipDetails->GetVector()->YVectorLength(shipDetails->GetYDest(), shipDetails->GetYCoordinate());
+
+	shipBase->GetVector()->FrameRatio(shipBase->GetVector()->GetXVectorLength(), shipBase->GetVector()->GetYVectorLength());
+	shipDetails->GetVector()->FrameRatio(shipDetails->GetVector()->GetXVectorLength(), shipDetails->GetVector()->GetYVectorLength());
+
+	shipBase->SetOrientation();
+	shipDetails->SetOrientation();
+
+	shipBase->SetIsMoving(true);
+	shipDetails->SetIsMoving(true);
 }
 
 float Level1::GetWindowWidth(void)
@@ -109,29 +217,14 @@ void Level1::SetWindowHeight(float height)
 void Level1::Render()
 {
 	gfx->ClearScreen(0.0f, 0.0f, 0.5f);
+
 	background->DrawBackground(windowWidth, windowHeight);
 
-	for (int i = 0; i < newGrid->selectCoord.size(); i++)
-	{
+	newGrid->PlanetRandomize(planet1, planet2, planet3);
+	shipBase->Draw(shipBase->GetXCoordinate(), shipBase->GetYCoordinate(), shipBase->GetOrientation());
+	shipDetails->Draw(shipDetails->GetXCoordinate(), shipDetails->GetYCoordinate(),shipDetails->GetOrientation());
 
-		if (newGrid->PlanetLocations[i].second == 1)
-		{
-			planet1->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
-		}
-		if (newGrid->PlanetLocations[i].second == 2)
-		{
-			planet2->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
-		}
-		if (newGrid->PlanetLocations[i].second == 3)
-		{
-			planet3->DrawPlanet(newGrid->selectCoord[i].first, newGrid->selectCoord[i].second);
-		}
-	}
-
-	shipBase->Draw(moving->GetShipBStart().first, moving->GetShipBStart().second);
-	shipDetails->Draw(moving->GetShipDStart().first, moving->GetShipDStart().second);
-
-	enemyShip->Draw(1, 1);
+	enemyShip->Draw(enemyShip->GetXCoordinate(),enemyShip->GetYCoordinate(),0);
 
 }
 

@@ -4,6 +4,13 @@
 
 Starship::Starship(Graphics* graphics)
 {
+	xCoordinate = 0.0;
+	yCoordinate = 0.0;
+	shipEnergy = 900;
+	shipScience = 0;
+	isMoving = false;
+	firstMovement = true;
+	shipVector = new Vector();
 	// Get a reference to the Graphics class
 	gfx = graphics;
 
@@ -43,10 +50,85 @@ void Starship::ShipChromaKey(float r, float g, float b)
 	chromaKeyEffect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
 }
 
-void Starship::Draw(float left, float top)
+void Starship::Draw(float left, float top, float orientation)
 {
 
 	gfx->GetDeviceContext()->DrawImage(chromaKeyEffect,
 		D2D1::Point2F(left, top));
+	gfx->GetDeviceContext()->SetTransform(D2D1::Matrix3x2F::Rotation(orientation, D2D1::Point2F(left, top)));
 	
+}
+
+float Starship::GetXCoordinate()
+{
+	return xCoordinate;
+}
+
+float Starship::GetYCoordinate()
+{
+	return yCoordinate;
+}
+
+void Starship::SetXCoordinate(float x)
+{
+	xCoordinate = x;
+}
+
+void Starship::SetYCoordinate(float y)
+{
+	yCoordinate = y;
+}
+
+void Starship::SetXDest(float x)
+{
+	xDest = x;
+}
+
+void Starship::SetYDest(float y)
+{
+	yDest = y;
+}
+
+float Starship::GetXDest(void)
+{
+	return xDest;
+}
+
+float Starship::GetYDest(void)
+{
+	return yDest;
+}
+bool Starship::GetFirstMovement()
+{
+	return firstMovement;
+}
+
+void Starship::SetFirstMovement()
+{
+	firstMovement = false;
+}
+
+Vector* Starship::GetVector()
+{
+	return shipVector;
+}
+
+void Starship::SetOrientation()
+{
+	const float PI = 3.1415926;
+	shipOrientation = atan2(yDest - yCoordinate, xDest - xCoordinate) * (180 / PI);
+}
+float Starship::GetOrientation()
+{
+	return shipOrientation;
+}
+
+bool Starship::GetIsMoving()
+{
+	return isMoving;
+}
+
+void Starship::SetIsMoving(bool moving)
+{
+	isMoving = moving;
 }

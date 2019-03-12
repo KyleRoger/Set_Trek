@@ -80,7 +80,7 @@ void Grid::CreateRandomCoordinates(void)
 //			populated for. This method creates a vecor that contains a pair.
 //			This pairs initial number corresponding to the grid index, the
 //			second number is the choice in planet.
-void Grid::PlanetRandomize()
+void Grid::PlanetRandomize(SpriteSheet* planet1, SpriteSheet* planet2, SpriteSheet* planet3)
 {
 	srand((unsigned)time(NULL));
 	int randomPlanet = 0; //Will correspond to one of three random planets.
@@ -96,6 +96,23 @@ void Grid::PlanetRandomize()
 		selectedPlanetLocID.first = index; //Index is the grid location.
 		selectedPlanetLocID.second = randomPlanet;//The planet to display.
 		PlanetLocations.push_back(selectedPlanetLocID); //Pair placed in vector.
+	}
+
+	for (int i = 0; i < selectCoord.size(); i++)
+	{
+
+		if (PlanetLocations[i].second == 1)
+		{
+			planet1->DrawPlanet(selectCoord[i].first, selectCoord[i].second);
+		}
+		if (PlanetLocations[i].second == 2)
+		{
+			planet2->DrawPlanet(selectCoord[i].first, selectCoord[i].second);
+		}
+		if (PlanetLocations[i].second == 3)
+		{
+			planet3->DrawPlanet(selectCoord[i].first, selectCoord[i].second);
+		}
 	}
 }
 

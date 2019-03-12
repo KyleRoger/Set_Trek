@@ -3,6 +3,7 @@
 #include "Starship.h"
 #include "Grid.h"
 #include "Movement.h"
+#include "Vector.h"
 #include <thread>
 #include <chrono>
 
@@ -14,6 +15,8 @@ class Level1 : public GameLevel
 	float windowHeight;
 	float gridWidth;
 	float gridHeight;
+	/*float sectorX;
+	float sectorY;*/
 
 	Movement* moving = new Movement(windowWidth, windowHeight);
 	SpriteSheet* background;
@@ -30,10 +33,19 @@ class Level1 : public GameLevel
 public:
 	void Load() override;
 	void Unload() override;
-	void Update() override;
+	bool Update() override;
 	void Render() override;
 	float GetWindowWidth(void);
 	float GetWindowHeight(void);
 	void SetWindowWidth(float width);
 	void SetWindowHeight(float height);
+	void SetShipDestination(float x, float y);
+	void SetShipPosition(void);
+	void IsMoveFinished(void);
+	void SetEnemyPos(void);
+	void SetEnemyDest(void);
+	void ShipCollision(void);
+	void PlanetTouched(void);
+	void NewSector(void);
+
 };
