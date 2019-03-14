@@ -16,6 +16,7 @@ void Level1::Load()
 	planet1 = new SpriteSheet(L"Images\\Planet1.bmp", gfx);
 	planet2 = new SpriteSheet(L"Images\\Planet2.bmp", gfx);
 	planet3 = new SpriteSheet(L"Images\\Planet3.bmp", gfx);
+	miniGameLayout = new SpriteSheet(L"Images\\miniGameLayout.bmp", gfx);
 	shipDetails = new Starship(gfx);
 	shipBase = new Starship(gfx);
 	enemyShip = new Starship(gfx);
@@ -78,13 +79,14 @@ bool Level1::Update()
 {
 
 	bool gameEnd = false;
+	bool miniGame = false;
 
 	if (shipBase->GetXCoordinate() + gridWidth >= windowWidth)
 	{
-		NewSector();
-		newGrid->CreateRandomCoordinates();
 		shipBase->SetIsMoving(false);
+		newGrid->CreateRandomCoordinates();
 		NewSector();
+
 	}
 	else
 	{
@@ -95,14 +97,20 @@ bool Level1::Update()
 		else if (shipBase->GetIsMoving())
 		{
 			SetShipPosition();
-
-			if (shipBase->GetIsMoving())
+			gameEnd = CheckShipCollision();
+			miniGame = PlanetTouched();
+			if (miniGame)
 			{
+
+				miniGameLayout->DrawMiniGame();
+			}
+			else
+			{
+				shipBase->SetFirstMovement();
+				IsMoveFinished();
 				SetEnemyDest();
 				SetEnemyPos();
 			}
-
-			IsMoveFinished();
 		}
 	}
 
@@ -118,6 +126,9 @@ void Level1::IsMoveFinished()
 		shipBase->SetYCoordinate(shipBase->GetYDest());
 		shipDetails->SetYCoordinate(shipDetails->GetYDest());
 
+		enemyShip->SetXCoordinate(enemyShip->GetXCoordinate());
+		enemyShip->SetYCoordinate(enemyShip->GetYCoordinate());
+
 		shipBase->SetIsMoving(false);
 		shipDetails->SetIsMoving(false);
 	}
@@ -132,16 +143,20 @@ void Level1::SetShipPosition()
 
 void Level1::SetEnemyPos(void)
 {
-	if (enemyShip->GetVector()->GetMagnitude() <= ((windowWidth / 20) * 4) ||
-		enemyShip->GetVector()->GetMagnitude() <= ((windowHeight / 20) * 4))
+	if (shipBase->GetIsMoving())
 	{
-		enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 5.15));
-		enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 5.15));
-	}
-	else
-	{
-		enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 4));
-		enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 4));
+		if (enemyShip->GetVector()->GetMagnitude() <= ((windowWidth / 20) * 4) ||
+			enemyShip->GetVector()->GetMagnitude() <= ((windowHeight / 20) * 4))
+		{
+			enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 5.15));
+			enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 5.15));
+		}
+		else
+		{
+			enemyShip->SetXCoordinate(enemyShip->GetXCoordinate() + (enemyShip->GetVector()->GetXRatio() * 4));
+			enemyShip->SetYCoordinate(enemyShip->GetYCoordinate() + (enemyShip->GetVector()->GetYRatio() * 4));
+		}
+
 	}
 }
 
@@ -156,27 +171,81 @@ void Level1::SetEnemyDest(void)
 	enemyShip->GetVector()->FrameRatio(enemyShip->GetVector()->GetXVectorLength(), enemyShip->GetVector()->GetYVectorLength());
 }
 
-void Level1::ShipCollision(void)
+bool Level1::CheckShipCollision(void)
 {
-
+	bool gameEnd = false;
+	if ((enemyShip->GetVector()->GetMagnitude() <= gridWidth && enemyShip->GetVector()->GetMagnitude() <= gridHeight) && !shipBase->GetFirstMovement())
+	{
+		if (shipBase->GetEnergy() - 300 <= 0)
+		{
+			shipBase->SetEnergy(shipBase->GetEnergy() - 300);
+			gameEnd = true;
+		}
+		else
+		{
+			shipBase->SetEnergy(shipBase->GetEnergy() - 300);
+		}
+		NewSector();
+		//newGrid->CreateRandomCoordinates();
+		shipBase->SetYCoordinate(windowHeight / 2);
+		shipDetails->SetYCoordinate(windowHeight / 2);
+		enemyShip->SetYCoordinate(windowHeight / 2);
+	}
+	return gameEnd;
 }
 
-void Level1::PlanetTouched(void)
+bool Level1::PlanetTouched(void)
 {
+	int i = 0;
+	bool miniGameActivate = false;
+	float planetLocation = 0.0;
 
+	for (i = 0; i < newGrid->selectCoord.size(); i++)
+	{
+		if ((shipBase->GetXCoordinate() >= newGrid->selectCoord[i].first && shipBase->GetXCoordinate() <= newGrid->selectCoord[i].first + gridWidth) &&
+			(shipBase->GetYCoordinate() >= newGrid->selectCoord[i].second && shipBase->GetYCoordinate() <= newGrid->selectCoord[i].second + gridHeight))
+		{
+			miniGameActivate = true;
+			break;
+		}
+	}
+	return miniGameActivate;
 }
 
 void Level1::NewSector(void)
 {
 
+	//Get rid of Vecor class.
+
+	shipBase->SetXCoordinate(0.0);
+	//shipBase->SetYCoordinate(windowHeight / 2);
+	shipBase->SetXDest(shipBase->GetXCoordinate());
+	shipBase->SetYDest(shipBase->GetYCoordinate());
+	shipBase->GetVector()->FrameRatio(0, 0);
+	shipDetails->GetVector()->FrameRatio(0, 0);
+	shipDetails->SetXCoordinate(0.0);
+	//shipDetails->SetYCoordinate(windowHeight / 2);
+	shipDetails->SetXDest(shipDetails->GetXCoordinate());
+	shipDetails->SetYDest(shipDetails->GetYCoordinate());
+
+	enemyShip->SetXCoordinate(windowWidth - gridWidth);
+	//enemyShip->SetYCoordinate(windowHeight / 2);
+	enemyShip->SetXDest(shipBase->GetXCoordinate());
+	enemyShip->SetYDest(shipBase->GetYCoordinate());
+	enemyShip->GetVector()->FrameRatio(0, 0);
+	
+	Mouse::mouseX = 0.0;
+	Mouse::mouseY = 0.0;
+
+	IsMoveFinished();
 }
 
 void Level1::SetShipDestination(float x, float y)
 {
-	shipBase->SetXDest(x - (gridWidth / 2));
-	shipDetails->SetXDest(x - (gridWidth / 2));
-	shipBase->SetYDest(y - (gridHeight / 2));
-	shipDetails->SetYDest(y - (gridHeight / 2));
+	shipBase->SetXDest(x);
+	shipDetails->SetXDest(x);
+	shipBase->SetYDest(y);
+	shipDetails->SetYDest(y);
 
 	shipBase->GetVector()->XVectorLength(shipBase->GetXDest(), shipBase->GetXCoordinate());
 	shipDetails->GetVector()->XVectorLength(shipDetails->GetXDest(), shipDetails->GetXCoordinate());
@@ -223,8 +292,9 @@ void Level1::Render()
 	newGrid->PlanetRandomize(planet1, planet2, planet3);
 	shipBase->Draw(shipBase->GetXCoordinate(), shipBase->GetYCoordinate(), shipBase->GetOrientation());
 	shipDetails->Draw(shipDetails->GetXCoordinate(), shipDetails->GetYCoordinate(),shipDetails->GetOrientation());
+	miniGameLayout->DrawMiniGame();
 
-	enemyShip->Draw(enemyShip->GetXCoordinate(),enemyShip->GetYCoordinate(),0);
+	enemyShip->Draw(enemyShip->GetXCoordinate(), enemyShip->GetYCoordinate(), enemyShip->GetOrientation());
 
 }
 

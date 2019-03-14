@@ -79,8 +79,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	theLevel->SetWindowHeight(height);
 
 	MSG message;
+	bool gameEnd = false;
 	message.message = WM_NULL; //Do not have this set to WM_QUIT, which has a specific context
-	while (message.message != WM_QUIT)
+	while (message.message != WM_QUIT && !gameEnd)
 	{
 		if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
 			//This allows us to send a message to the WindowProc IF there is one
@@ -88,7 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		else
 		{
 			//Update Routine... we've moved the code for handling updates to GameController
-			GameController::Update(); //Whrere the screen is updated.
+			gameEnd = GameController::Update(); //Whrere the screen is updated.
 
 			//Render Routine... This is very modular. GameController now handles the rendering
 			graphics->BeginDraw();

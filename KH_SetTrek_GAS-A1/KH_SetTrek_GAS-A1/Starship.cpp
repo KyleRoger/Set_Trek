@@ -55,7 +55,7 @@ void Starship::Draw(float left, float top, float orientation)
 
 	gfx->GetDeviceContext()->DrawImage(chromaKeyEffect,
 		D2D1::Point2F(left, top));
-	gfx->GetDeviceContext()->SetTransform(D2D1::Matrix3x2F::Rotation(orientation, D2D1::Point2F(left, top)));
+	//gfx->GetDeviceContext()->SetTransform(D2D1::Matrix3x2F::Rotation(orientation, D2D1::Point2F(left, top)));
 	
 }
 
@@ -131,4 +131,14 @@ bool Starship::GetIsMoving()
 void Starship::SetIsMoving(bool moving)
 {
 	isMoving = moving;
+}
+
+void Starship::SetEnergy(float energy)
+{
+	shipEnergy = energy;
+}
+
+float Starship::GetEnergy()
+{
+	return shipEnergy;
 }

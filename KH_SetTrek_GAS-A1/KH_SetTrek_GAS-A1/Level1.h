@@ -24,6 +24,7 @@ class Level1 : public GameLevel
 	SpriteSheet* planet1;
 	SpriteSheet* planet2;
 	SpriteSheet* planet3;
+	SpriteSheet* miniGameLayout;
 	SpriteSheet* shipBaseTest;
 	Starship* shipBase;
 	Starship*  shipDetails;
@@ -45,8 +46,8 @@ public:
 	void IsMoveFinished(void);
 	void SetEnemyPos(void);
 	void SetEnemyDest(void);
-	void ShipCollision(void);
-	void PlanetTouched(void);
+	bool CheckShipCollision(void);
+	bool PlanetTouched(void);
 	void NewSector(void);
 
 };

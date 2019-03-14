@@ -56,6 +56,8 @@ public:
 	float GetYDest(void);
 	bool GetIsMoving(void);
 	void SetIsMoving(bool moving);
+	void SetEnergy(float energy);
+	float GetEnergy(void);
 
 	Vector* GetVector();
 	void SetOrientation();

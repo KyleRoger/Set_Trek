@@ -38,7 +38,8 @@ float Vector::GetMagnitude()
 
 void Vector::VectorMagnitude(float xVector, float yVector)
 {
-	vectorMagnitude = sqrt(xVector * xVector + yVector * yVector);
+	std::complex<float> vectorComplex(xVector, yVector);
+	vectorMagnitude = std::abs(vectorComplex);
 }
 void Vector::FrameRatio(float xVector, float yVector)
 {

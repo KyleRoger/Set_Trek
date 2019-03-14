@@ -88,6 +88,22 @@ void SpriteSheet::ApplyChromaEffect()
 	effect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
 }
 
+void SpriteSheet::DrawMiniGame()
+{
+	ID2D1Effect *chromakeyEffect = NULL;
+
+	D2D1_VECTOR_3F vector{ 0.0f, 0.0f, 0.0f };
+	gfx->GetDeviceContext()->CreateEffect(CLSID_D2D1ChromaKey, &chromakeyEffect);
+
+	chromakeyEffect->SetInput(0, bmp);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_COLOR, vector);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_TOLERANCE, 0.8f);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_INVERT_ALPHA, false);
+	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
+
+
+	gfx->GetDeviceContext()->DrawImage(chromakeyEffect);
+}
 
 void SpriteSheet::Draw()
 {

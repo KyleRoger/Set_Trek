@@ -22,5 +22,6 @@ public:
 	void DrawPlanet(float left, float top);
 	void ApplyChromaEffect();
 	ID2D1Bitmap* GetBitmap(void);
+	void DrawMiniGame(void);
 
 };
