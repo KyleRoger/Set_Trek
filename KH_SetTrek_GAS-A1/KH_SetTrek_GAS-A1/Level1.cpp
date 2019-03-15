@@ -30,30 +30,30 @@ void Level1::Load()
 	//Chroma Key the planets
 	planet1->ApplyChromaEffect();
 	planet2->ApplyChromaEffect();
-planet3->ApplyChromaEffect();
+	planet3->ApplyChromaEffect();
 
-//Apply the Chroma Key to the shipBase and shipDetails.
-shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
-shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
+	//Apply the Chroma Key to the shipBase and shipDetails.
+	shipBase->ShipChromaKey(0.0f, 1.0f, 0.0f);
+	shipDetails->ShipChromaKey(0.0f, 1.0f, 0.0f);
 
-shipBase->SetXCoordinate(0.0);
-shipDetails->SetXCoordinate(0.0);
-shipBase->SetYCoordinate(windowHeight / 2);
-shipDetails->SetYCoordinate(windowHeight / 2);
+	shipBase->SetXCoordinate(0.0);
+	shipDetails->SetXCoordinate(0.0);
+	shipBase->SetYCoordinate(windowHeight / 2);
+	shipDetails->SetYCoordinate(windowHeight / 2);
 
-enemyShip->SetXCoordinate(windowWidth - gridWidth);
-enemyShip->SetYCoordinate(windowHeight / 2);
+	enemyShip->SetXCoordinate(windowWidth - gridWidth);
+	enemyShip->SetYCoordinate(windowHeight / 2);
 
-enemyShip->ShipChromaKey(0.0f, 0.0f, 1.0f);
+	enemyShip->ShipChromaKey(0.0f, 0.0f, 1.0f);
 
-//Move the player forward
-//moving->PlayerMove();
+	//Move the player forward
+	//moving->PlayerMove();
 
-//Create a grid, construct it, create random coordinates and randomize the planets.
-newGrid = new Grid(windowWidth, windowHeight);
-newGrid->ConstructGrid();
-newGrid->CreateRandomCoordinates();
-newGrid->PlanetRandomize(planet1, planet2, planet3);
+	//Create a grid, construct it, create random coordinates and randomize the planets.
+	newGrid = new Grid(windowWidth, windowHeight);
+	newGrid->ConstructGrid();
+	newGrid->CreateRandomCoordinates();
+	newGrid->PlanetRandomize(planet1, planet2, planet3);
 
 
 }
@@ -101,12 +101,7 @@ int Level1::Update()
 			miniGame = PlanetTouched();
 			gameEnd = CheckShipCollision();
 
-			if (miniGame)
-			{
-				miniGame = true;
-				
-			}
-			else
+			if(!miniGame)
 			{
 				SetShipPosition();
 				shipBase->SetFirstMovement();
@@ -226,6 +221,7 @@ bool Level1::PlanetTouched(void)
 
 			if (Mouse::keyboardSelection == 49 || Mouse::keyboardSelection == 97)
 			{
+				Mouse::keyboardSelection = 0;
 				if (shipBase->GetEnergy() + shipBase->GetTempEnergy() >= 900)
 				{
 					shipBase->SetEnergy(900);
@@ -240,29 +236,22 @@ bool Level1::PlanetTouched(void)
 
 			if (Mouse::keyboardSelection == 50 || Mouse::keyboardSelection == 98)
 			{
+				Mouse::keyboardSelection = 0;
 				shipBase->SetScience(shipBase->GetScience() + shipBase->GetTempScience());
 				shipBase->SetTempScience(0);
 			}
 
 			if (Mouse::keyboardSelection == 51 || Mouse::keyboardSelection == 99)
 			{
-				shipBase->SetXCoordinate(shipBase->GetXCoordinate() + gridWidth  + 1);
+				Mouse::keyboardSelection = 0;
+				Mouse::mouseX = 0;
+				Mouse::mouseY = 0;
+				shipBase->SetXCoordinate(shipBase->GetXCoordinate() + gridWidth + 1);
 				shipDetails->SetXCoordinate(shipDetails->GetXCoordinate() + gridWidth + 1);
 				SetShipDestination(shipBase->GetXCoordinate(), shipBase->GetYCoordinate());
-				//shipBase->GetVector()->FrameRatio(0, 0);
-				//shipDetails->GetVector()->FrameRatio(0, 0);
-				//shipDetails->SetXDest(shipDetails->GetXCoordinate());
-				//shipDetails->SetYDest(shipDetails->GetYCoordinate());
-
-				//enemyShip->SetXDest(shipBase->GetXCoordinate());
-				//enemyShip->SetYDest(shipBase->GetYCoordinate());
-				//enemyShip->GetVector()->FrameRatio(0, 0);
 				
 				miniGameActivate = false;
-				return miniGameActivate;
-
 			}
-			break;
 		}
 
 		else if ((shipBase->GetXCoordinate() >= newGrid->selectCoord[i].first && shipBase->GetXCoordinate() <= newGrid->selectCoord[i].first + gridWidth) &&

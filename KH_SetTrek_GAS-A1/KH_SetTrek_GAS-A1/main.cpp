@@ -10,8 +10,6 @@ Graphics* graphics;
 #define GAME_END -1
 #define ALL_GOOD 0
 
-bool miniGame = false;
-
 LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (msg == WM_DESTROY ||
@@ -30,7 +28,7 @@ LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 		Mouse::IsClick = true;
 
 	}
-	else if (msg == WM_KEYDOWN && miniGame)
+	else if (msg == WM_KEYDOWN)
 	{
 		Mouse::keyboardSelection = wparam;
 	}
@@ -91,9 +89,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	MSG message;
 	int gameState = 0;
 	bool gameEnd = false;
+	bool miniGame = false;
 	message.message = WM_NULL; //Do not have this set to WM_QUIT, which has a specific context
 	while (message.message != WM_QUIT && !gameEnd)
 	{
+		miniGame = false;
+
 		if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
 			//This allows us to send a message to the WindowProc IF there is one
 			DispatchMessage(&message);
@@ -109,11 +110,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 			else if (gameState == MINI_GAME)
 			{
 				miniGame = true;
-			}
-			else
-			{
-				miniGame = false;
-				gameEnd = false;
 			}
 			//Render Routine... This is very modular. GameController now handles the rendering
 			graphics->BeginDraw();
