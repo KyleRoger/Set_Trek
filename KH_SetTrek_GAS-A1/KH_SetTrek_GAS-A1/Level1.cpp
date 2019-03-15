@@ -3,6 +3,7 @@
 #include "Level1.h"
 #include "Mouse.h"
 
+
 void Level1::Load()
 {
 	gameStart = true;
@@ -75,11 +76,12 @@ void Level1::Unload()
 //			to the next. The thread sleeps for 0.5 seconds and then continues to 
 //			update the game state, move the player and potenttially re-randomize
 //			the planets.
-bool Level1::Update()
+int Level1::Update()
 {
 
 	bool gameEnd = false;
 	bool miniGame = false;
+	char choice;
 
 	if (shipBase->GetXCoordinate() + gridWidth >= windowWidth)
 	{
@@ -96,16 +98,17 @@ bool Level1::Update()
 		}
 		else if (shipBase->GetIsMoving())
 		{
-			SetShipPosition();
-			gameEnd = CheckShipCollision();
 			miniGame = PlanetTouched();
+			gameEnd = CheckShipCollision();
+
 			if (miniGame)
 			{
-
-				miniGameLayout->DrawMiniGame();
+				miniGame = true;
+				
 			}
 			else
 			{
+				SetShipPosition();
 				shipBase->SetFirstMovement();
 				IsMoveFinished();
 				SetEnemyDest();
@@ -113,8 +116,18 @@ bool Level1::Update()
 			}
 		}
 	}
-
-	return gameEnd;
+	if (gameEnd)
+	{
+		return GAME_END;
+	}
+	else if (miniGame)
+	{
+		return MINI_GAME;
+	}
+	else
+	{
+		return ALL_GOOD;
+	}
 }
 void Level1::IsMoveFinished()
 {
@@ -199,12 +212,67 @@ bool Level1::PlanetTouched(void)
 	int i = 0;
 	bool miniGameActivate = false;
 	float planetLocation = 0.0;
+	srand((unsigned)time(NULL));
 
 	for (i = 0; i < newGrid->selectCoord.size(); i++)
 	{
-		if ((shipBase->GetXCoordinate() >= newGrid->selectCoord[i].first && shipBase->GetXCoordinate() <= newGrid->selectCoord[i].first + gridWidth) &&
+		if (shipBase->GetXCoordinate() == newGrid->selectCoord[i].first &&
+			shipBase->GetYCoordinate() == newGrid->selectCoord[i].second && !miniGameActivate)
+		{
+			miniGameActivate = true;
+
+			shipBase->SetTempEnergy((rand() % 300 + 1));
+			shipBase->SetTempScience((rand() % 300 + 1));
+
+			if (Mouse::keyboardSelection == 49 || Mouse::keyboardSelection == 97)
+			{
+				if (shipBase->GetEnergy() + shipBase->GetTempEnergy() >= 900)
+				{
+					shipBase->SetEnergy(900);
+					shipBase->SetTempEnergy(0);
+				}
+				else
+				{
+					shipBase->SetEnergy(shipBase->GetEnergy() + shipBase->GetTempEnergy());
+					shipBase->SetTempEnergy(0);
+				}
+			}
+
+			if (Mouse::keyboardSelection == 50 || Mouse::keyboardSelection == 98)
+			{
+				shipBase->SetScience(shipBase->GetScience() + shipBase->GetTempScience());
+				shipBase->SetTempScience(0);
+			}
+
+			if (Mouse::keyboardSelection == 51 || Mouse::keyboardSelection == 99)
+			{
+				shipBase->SetXCoordinate(shipBase->GetXCoordinate() + gridWidth  + 1);
+				shipDetails->SetXCoordinate(shipDetails->GetXCoordinate() + gridWidth + 1);
+				SetShipDestination(shipBase->GetXCoordinate(), shipBase->GetYCoordinate());
+				//shipBase->GetVector()->FrameRatio(0, 0);
+				//shipDetails->GetVector()->FrameRatio(0, 0);
+				//shipDetails->SetXDest(shipDetails->GetXCoordinate());
+				//shipDetails->SetYDest(shipDetails->GetYCoordinate());
+
+				//enemyShip->SetXDest(shipBase->GetXCoordinate());
+				//enemyShip->SetYDest(shipBase->GetYCoordinate());
+				//enemyShip->GetVector()->FrameRatio(0, 0);
+				
+				miniGameActivate = false;
+				return miniGameActivate;
+
+			}
+			break;
+		}
+
+		else if ((shipBase->GetXCoordinate() >= newGrid->selectCoord[i].first && shipBase->GetXCoordinate() <= newGrid->selectCoord[i].first + gridWidth) &&
 			(shipBase->GetYCoordinate() >= newGrid->selectCoord[i].second && shipBase->GetYCoordinate() <= newGrid->selectCoord[i].second + gridHeight))
 		{
+			shipBase->SetXCoordinate(newGrid->selectCoord[i].first);
+			shipBase->SetYCoordinate(newGrid->selectCoord[i].second);
+			shipDetails->SetXCoordinate(newGrid->selectCoord[i].first);
+			shipDetails->SetYCoordinate(newGrid->selectCoord[i].second);
+
 			miniGameActivate = true;
 			break;
 		}
@@ -283,18 +351,49 @@ void Level1::SetWindowHeight(float height)
 }
 
 
-void Level1::Render()
+void Level1::Render(bool miniGame)
 {
+	int i = 0;
+	float xCoord = 0.0;
+	float yCoord = 0.0;
+	int gridPlacement = 0;
+
 	gfx->ClearScreen(0.0f, 0.0f, 0.5f);
 
 	background->DrawBackground(windowWidth, windowHeight);
 
-	newGrid->PlanetRandomize(planet1, planet2, planet3);
-	shipBase->Draw(shipBase->GetXCoordinate(), shipBase->GetYCoordinate(), shipBase->GetOrientation());
-	shipDetails->Draw(shipDetails->GetXCoordinate(), shipDetails->GetYCoordinate(),shipDetails->GetOrientation());
-	miniGameLayout->DrawMiniGame();
+	if (miniGame)
+	{
+		
+		miniGameLayout->DrawMiniGame(windowWidth / 3, windowHeight / 3);
 
-	enemyShip->Draw(enemyShip->GetXCoordinate(), enemyShip->GetYCoordinate(), enemyShip->GetOrientation());
+		for (int i = 0; i < newGrid->selectCoord.size(); i++)
+		{
+
+			if (newGrid->PlanetLocations[i].second == 1 && (newGrid->selectCoord[i].first == shipBase->GetXCoordinate()) && (newGrid->selectCoord[i].second == shipBase->GetYCoordinate()))
+			{
+				planet1->DrawPlanet(((windowWidth / 3) + (gridWidth / 5)), ((windowHeight / 3) + (gridHeight / 2)));
+				break;
+			}
+			if (newGrid->PlanetLocations[i].second == 2 && (newGrid->selectCoord[i].first == shipBase->GetXCoordinate()) && (newGrid->selectCoord[i].second == shipBase->GetYCoordinate()))
+			{
+				planet2->DrawPlanet(((windowWidth / 3) + (gridWidth / 5)), ((windowHeight / 3) + (gridHeight / 2)));
+				break;
+			}
+			if (newGrid->PlanetLocations[i].second == 3 && (newGrid->selectCoord[i].first == shipBase->GetXCoordinate()) && (newGrid->selectCoord[i].second == shipBase->GetYCoordinate()))
+			{
+				planet3->DrawPlanet(((windowWidth /3) + (gridWidth /5)), ((windowHeight / 3) + (gridHeight / 2)));
+				break;
+			}
+		}
+	}
+	else
+	{
+		newGrid->PlanetRandomize(planet1, planet2, planet3);
+		shipBase->Draw(shipBase->GetXCoordinate(), shipBase->GetYCoordinate(), shipBase->GetOrientation());
+		shipDetails->Draw(shipDetails->GetXCoordinate(), shipDetails->GetYCoordinate(), shipDetails->GetOrientation());
+		enemyShip->Draw(enemyShip->GetXCoordinate(), enemyShip->GetYCoordinate(), enemyShip->GetOrientation());
+	}
 
 }
 

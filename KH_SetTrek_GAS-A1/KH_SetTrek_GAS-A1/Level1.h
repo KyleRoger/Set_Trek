@@ -7,7 +7,9 @@
 #include <thread>
 #include <chrono>
 
-
+#define MINI_GAME 1
+#define GAME_END -1
+#define ALL_GOOD 0
 
 class Level1 : public GameLevel
 {
@@ -35,8 +37,8 @@ class Level1 : public GameLevel
 public:
 	void Load() override;
 	void Unload() override;
-	bool Update() override;
-	void Render() override;
+	int Update() override;
+	void Render(bool miniGame) override;
 	float GetWindowWidth(void);
 	float GetWindowHeight(void);
 	void SetWindowWidth(float width);

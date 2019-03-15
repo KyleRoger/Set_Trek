@@ -88,7 +88,7 @@ void SpriteSheet::ApplyChromaEffect()
 	effect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
 }
 
-void SpriteSheet::DrawMiniGame()
+void SpriteSheet::DrawMiniGame(float width, float height)
 {
 	ID2D1Effect *chromakeyEffect = NULL;
 
@@ -102,7 +102,8 @@ void SpriteSheet::DrawMiniGame()
 	chromakeyEffect->SetValue(D2D1_CHROMAKEY_PROP_FEATHER, false);
 
 
-	gfx->GetDeviceContext()->DrawImage(chromakeyEffect);
+	gfx->GetDeviceContext()->DrawImage(chromakeyEffect,
+		D2D1::Point2F(width, height));
 }
 
 void SpriteSheet::Draw()

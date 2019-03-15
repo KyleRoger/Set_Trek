@@ -14,6 +14,6 @@ public:
 	static void Init();
 	static void LoadInitialLevel(GameLevel* lev);
 	static void SwitchLevel(GameLevel* lev);
-	static void Render();
-	static bool Update();
+	static void Render(bool miniGame);
+	static int Update();
 };

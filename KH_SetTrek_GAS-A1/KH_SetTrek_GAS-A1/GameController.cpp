@@ -27,22 +27,23 @@ void GameController::SwitchLevel(GameLevel* lev)
 	Loading = false;
 }
 
-void GameController::Render()
+void GameController::Render(bool miniGame)
 {
 	if (Loading) return;//nice! Do not update or render if the scene is loading.
-	currentLevel->Render();
+	currentLevel->Render(miniGame);
 }
 
-bool GameController::Update()
+int GameController::Update()
 {
-	bool gameEnd;
+	int gameState = 0;
 
 	if (Loading)
 	{
-		return gameEnd; //nice! Do not update or render if the scene is loading.
+		return gameState; //nice! Do not update or render if the scene is loading.
 	}
 	else
 	{
-		gameEnd = currentLevel->Update();
+		gameState = currentLevel->Update();
+		return gameState;
 	}
 }

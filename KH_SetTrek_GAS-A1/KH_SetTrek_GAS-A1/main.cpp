@@ -6,6 +6,12 @@
 #include "Mouse.h"
 Graphics* graphics;
 
+#define MINI_GAME 1
+#define GAME_END -1
+#define ALL_GOOD 0
+
+bool miniGame = false;
+
 LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	if (msg == WM_DESTROY ||
@@ -14,7 +20,7 @@ LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 		PostQuitMessage(0);
 		return 0;
 	}
-	if (msg == WM_LBUTTONDOWN)
+	else if (msg == WM_LBUTTONDOWN)
 	{
 		float x = LOWORD(lparam);
 		float y = HIWORD(lparam);
@@ -23,6 +29,10 @@ LRESULT CALLBACK WinProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 		Mouse::mouseY = y;
 		Mouse::IsClick = true;
 
+	}
+	else if (msg == WM_KEYDOWN && miniGame)
+	{
+		Mouse::keyboardSelection = wparam;
 	}
 	return DefWindowProc(handle, msg, wparam, lparam);
 }
@@ -79,6 +89,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 	theLevel->SetWindowHeight(height);
 
 	MSG message;
+	int gameState = 0;
 	bool gameEnd = false;
 	message.message = WM_NULL; //Do not have this set to WM_QUIT, which has a specific context
 	while (message.message != WM_QUIT && !gameEnd)
@@ -89,11 +100,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance, LPSTR cmdLine, i
 		else
 		{
 			//Update Routine... we've moved the code for handling updates to GameController
-			gameEnd = GameController::Update(); //Whrere the screen is updated.
+			gameState = GameController::Update(); //Whrere the screen is updated.
 
+			if (gameState == GAME_END)
+			{
+				gameEnd = true;
+			}
+			else if (gameState == MINI_GAME)
+			{
+				miniGame = true;
+			}
+			else
+			{
+				miniGame = false;
+				gameEnd = false;
+			}
 			//Render Routine... This is very modular. GameController now handles the rendering
 			graphics->BeginDraw();
-			GameController::Render();
+			GameController::Render(miniGame);
 			graphics->EndDraw();
 
 		}

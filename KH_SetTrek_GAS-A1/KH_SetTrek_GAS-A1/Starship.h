@@ -33,6 +33,8 @@ private:
 	float yDest;
 	Vector* shipVector;
 	float shipOrientation;
+	float shipTempScience;
+	float shipTempEnergy;
 
 public:
 
@@ -58,6 +60,12 @@ public:
 	void SetIsMoving(bool moving);
 	void SetEnergy(float energy);
 	float GetEnergy(void);
+	void SetScience(float science);
+	float GetScience(void);
+	void SetTempScience(float science);
+	float GetTempScience(void);
+	void SetTempEnergy(float energy);
+	float GetTempEnergy(void);
 
 	Vector* GetVector();
 	void SetOrientation();

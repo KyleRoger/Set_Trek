@@ -15,6 +15,6 @@ public:
 
 	virtual void Load() = 0;
 	virtual void Unload() = 0;
-	virtual bool Update() = 0;
-	virtual void Render() = 0;
+	virtual int Update() = 0;
+	virtual void Render(bool miniGame) = 0;
 };

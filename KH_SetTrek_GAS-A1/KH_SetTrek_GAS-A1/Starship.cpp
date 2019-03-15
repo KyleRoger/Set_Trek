@@ -8,6 +8,8 @@ Starship::Starship(Graphics* graphics)
 	yCoordinate = 0.0;
 	shipEnergy = 900;
 	shipScience = 0;
+	shipTempScience = 0.0;
+	shipTempEnergy = 0.0;
 	isMoving = false;
 	firstMovement = true;
 	shipVector = new Vector();
@@ -141,4 +143,32 @@ void Starship::SetEnergy(float energy)
 float Starship::GetEnergy()
 {
 	return shipEnergy;
+}
+
+void Starship::SetScience(float science)
+{
+	shipScience = science;
+}
+float Starship::GetScience(void)
+{
+	return shipScience;
+}
+
+void Starship::SetTempEnergy(float energy)
+{
+	shipTempEnergy = energy;
+}
+
+float Starship::GetTempEnergy()
+{
+	return shipTempEnergy;
+}
+
+void Starship::SetTempScience(float science)
+{
+	shipTempScience = science;
+}
+float Starship::GetTempScience(void)
+{
+	return shipTempScience;
 }
